@@ -12,6 +12,13 @@ spring:
     timeout-per-shutdown-phase: 15s # Defines a 15 s grace period
   cloud:
     gateway:
+      httpclient: # Configures properties for the HTTP client
+        connect-timeout: 2000 # Time limit for a connection to be established
+        response-timeout: 5s # Time limit for a response to be received
+        pool:
+          type: elastic
+          max-idle-time: 15s
+          max-life-time: 60s
       routes:
         - id: catalog-route
           uri: ${CATALOG_SERVICE_URL:http://localhost:9001}/books
