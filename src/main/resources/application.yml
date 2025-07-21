@@ -1,0 +1,23 @@
+server:
+  port: 9000
+  netty:
+    connection-timeout: 2s # How long to wait for a TCP connection to be established
+    idle-timeout: 15s # How long to wait before closing a TCP connection if no data is transferred
+  shutdown: graceful # Enables graceful shutdown
+
+spring:
+  application:
+    name: edge-service
+  lifecycle:
+    timeout-per-shutdown-phase: 15s # Defines a 15 s grace period
+  cloud:
+    gateway:
+      routes:
+        - id: catalog-route
+          uri: ${CATALOG_SERVICE_URL:http://localhost:9001}/books
+          predicates:
+            - Path=/books/**
+        - id: order-route
+          uri: ${ORDER_SERVICE_URL:http://localhost:9002}/orders # The URI value comes from an environment variable or else from the default
+          predicates:
+            - Path=/orders/**
